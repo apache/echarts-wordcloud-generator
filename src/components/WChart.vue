@@ -8,41 +8,29 @@
 <script setup lang="ts">
 import { onMounted, shallowRef, ref } from 'vue';
 import * as echarts from 'echarts';
-import type { ECharts } from 'echarts';
 import 'echarts-wordcloud';
 
 // const props = defineProps({
 //   foo: String
 // });
-const chart = shallowRef<ECharts | null>(null);
+const chart = shallowRef<echarts.ECharts | null>(null);
 const chartRef = ref<HTMLElement | null>(null);
 
-const run = () => {
-    console.log('run', chart.value);
+defineExpose({
+    run
+});
+
+function run(data?: []) {
     chart.value!.setOption({
         series: [{
             type: 'wordCloud',
-            data: [{
-                name: 'series',
-                value: 100
-            }, {
-                name: 'data',
-                value: 30
-            }, {
-                name: 'itemStyle',
-                value: 20
-            }, {
-                name: 'lineStyle',
-                value: 5
-            }]
+            data: data || []
         }]
     });
 };
 
 onMounted(() => {
-    console.log('mounted', chartRef.value);
     chart.value = echarts.init(chartRef.value!);
-    run();
 });
 </script>
 

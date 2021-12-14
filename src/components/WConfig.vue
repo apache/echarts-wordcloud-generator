@@ -1,7 +1,7 @@
 <template>
     <el-collapse>
-        <el-collapse-item title="颜色" name="1">
-            <h4>基础色</h4>
+        <el-collapse-item title="颜色" name="color">
+            <!-- <h4>基础色</h4>
             <div>
                 <el-color-picker
                     v-for="(color, index) in themeColors"
@@ -16,7 +16,7 @@
                 <div class="color-picker-btn">
                     <i class="el-icon-plus"></i>
                 </div>
-            </div>
+            </div> -->
 
             <h4>色相范围</h4>
             <el-row>
@@ -78,6 +78,18 @@
                 </el-col>
             </el-row>
         </el-collapse-item>
+
+        <el-collapse-item title="文字" name="font">
+            <!-- <h4>字体</h4> -->
+            <el-row>
+                <el-col :span="12">
+                    <el-label>字体</el-label>
+                </el-col>
+                <el-col :span="12">
+                </el-col>
+            </el-row>
+
+        </el-collapse-item>
     </el-collapse>
 </template>
 
@@ -121,5 +133,14 @@ const alpha = ref([0.5, 0.8]);
 
 .text-pad {
     padding: 8px 0;
+}
+
+.el-dropdown-link {
+    cursor: pointer;
+    color: #409EFF;
+}
+
+.el-icon-arrow-down {
+    font-size: 12px;
 }
 </style>

@@ -6,27 +6,42 @@
         </h3>
         <el-tabs type="card" v-model="activeName">
             <el-tab-pane label="样式" name="config">
-                <WConfig></WConfig>
+                <WConfig ref="wconfig"></WConfig>
             </el-tab-pane>
             <el-tab-pane label="数据" name="data">
-                <WData></WData>
+                <WData ref="wdata" @change="onChange"></WData>
             </el-tab-pane>
             <el-tab-pane label="导出" name="export">导出</el-tab-pane>
         </el-tabs>
     </el-aside>
     <el-main>
-        <WChart></WChart>
+        <WChart ref="wchart"></WChart>
     </el-main>
 </el-container>
 </template>
 
 <script lang='ts' setup>
-import { Ref, ref } from 'vue';
+import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import WChart from './components/WChart.vue';
 import WConfig from './components/WConfig.vue';
 import WData from './components/WData.vue';
+import defaultData from './data/defaultData';
 
+const wconfig = ref<any>(null);
+const wdata = ref<any>(null);
+const wchart = ref<any>(null);
+
+const {t} = useI18n({ useScope: 'global' });
 const activeName = 'config';
+
+function onChange() {
+    wchart.value?.run(wdata.value?.data);
+}
+
+setTimeout(() => {
+    wdata.value?.setData(defaultData);
+});
 </script>
 
 <style>
@@ -52,5 +67,6 @@ h4 {
 
 .el-aside {
     padding: 0 15px;
+    --el-aside-width: 400px;
 }
 </style>
