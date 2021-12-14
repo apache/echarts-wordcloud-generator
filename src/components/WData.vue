@@ -1,73 +1,18 @@
 <template>
-    <h4>主题色</h4>
     <div>
-        <el-color-picker
-            v-for="(color, index) in themeColors"
-            v-bind:key="index"
-            v-model="themeColors[index]"
-            size="small"
-        >
-        </el-color-picker>
-        <div class="color-picker-btn">
-            <i class="el-icon-minus"></i>
-        </div>
-        <div class="color-picker-btn">
-            <i class="el-icon-plus"></i>
+        <div class="table" ref="tableRef">
         </div>
     </div>
-    <h4>亮度范围</h4>
-    <el-row>
-        <el-col :span="22" :offset="1">
-            <el-slider
-            v-model="value"
-            range
-            show-tooltip
-            :max="1"
-            :step="0.05"
-            input-size="medium"
-            >
-            </el-slider>
-        </el-col>
-    </el-row>
-
-    <h4>饱和度范围</h4>
-    <el-row>
-        <el-col :span="22" :offset="1">
-            <el-slider
-            v-model="value"
-            range
-            show-tooltip
-            :max="1"
-            :step="0.05"
-            input-size="medium"
-            >
-            </el-slider>
-        </el-col>
-    </el-row>
-
-    <h4>透明度范围</h4>
-    <el-row>
-        <el-col :span="22" :offset="1">
-            <el-slider
-            v-model="value"
-            range
-            show-tooltip
-            :max="1"
-            :step="0.05"
-            input-size="medium"
-            >
-            </el-slider>
-        </el-col>
-    </el-row>
-    <!-- <el-collapse>
-        <el-collapse-item title="一致性 Consistency" name="1">
-        </el-collapse-item>
-    </el-collapse> -->
 </template>
 
 
 <script setup lang="ts">
-const themeColors = ['#720FEB', '#EB1AA9', '#EB1AA2'];
+import { toRefs, PropType } from 'vue';
+
+const props = defineProps({
+  data: Array as PropType<{ value: number, name: string }[]>
+});
+const { data } = toRefs(props);
 </script>
 
 <style lang="scss">

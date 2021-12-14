@@ -1,70 +1,94 @@
 <template>
-    <h4>基础色</h4>
-    <div>
-        <el-color-picker
-            v-for="(color, index) in themeColors"
-            v-bind:key="index"
-            v-model="themeColors[index]"
-            size="small"
-        >
-        </el-color-picker>
-        <div class="color-picker-btn">
-            <i class="el-icon-minus"></i>
-        </div>
-        <div class="color-picker-btn">
-            <i class="el-icon-plus"></i>
-        </div>
-    </div>
-    <h4>亮度范围</h4>
-    <el-row>
-        <el-col :span="22" :offset="1">
-            <el-slider
-                v-model="value"
-                range
-                show-tooltip
-                :max="1"
-                :step="0.05"
-                input-size="medium"
-            >
-            </el-slider>
-        </el-col>
-    </el-row>
+    <el-collapse>
+        <el-collapse-item title="颜色" name="1">
+            <h4>基础色</h4>
+            <div>
+                <el-color-picker
+                    v-for="(color, index) in themeColors"
+                    v-bind:key="index"
+                    v-model="themeColors[index]"
+                    size="small"
+                >
+                </el-color-picker>
+                <div class="color-picker-btn">
+                    <i class="el-icon-minus"></i>
+                </div>
+                <div class="color-picker-btn">
+                    <i class="el-icon-plus"></i>
+                </div>
+            </div>
 
-    <h4>饱和度范围</h4>
-    <el-row>
-        <el-col :span="22" :offset="1">
-            <el-slider
-                v-model="value"
-                range
-                show-tooltip
-                :max="1"
-                :step="0.05"
-                input-size="medium"
-            >
-            </el-slider>
-        </el-col>
-    </el-row>
+            <h4>色相范围</h4>
+            <el-row>
+                <el-col :span="22" :offset="1">
+                    <el-slider
+                        v-model="hue"
+                        range
+                        show-tooltip
+                        :max="1"
+                        :step="0.05"
+                        input-size="medium"
+                    >
+                    </el-slider>
+                </el-col>
+            </el-row>
 
-    <h4>透明度范围</h4>
-    <el-row>
-        <el-col :span="22" :offset="1">
-            <el-slider
-                v-model="value"
-                range
-                show-tooltip
-                :max="1"
-                :step="0.05"
-                input-size="medium"
-            >
-            </el-slider>
-        </el-col>
-    </el-row>
+            <h4>饱和度范围</h4>
+            <el-row>
+                <el-col :span="22" :offset="1">
+                    <el-slider
+                        v-model="saturation"
+                        range
+                        show-tooltip
+                        :max="1"
+                        :step="0.05"
+                        input-size="medium"
+                    >
+                    </el-slider>
+                </el-col>
+            </el-row>
+
+            <h4>亮度范围</h4>
+            <el-row>
+                <el-col :span="22" :offset="1">
+                    <el-slider
+                        v-model="lightness"
+                        range
+                        show-tooltip
+                        :max="1"
+                        :step="0.05"
+                        input-size="medium"
+                    >
+                    </el-slider>
+                </el-col>
+            </el-row>
+
+            <h4>透明度范围</h4>
+            <el-row>
+                <el-col :span="22" :offset="1">
+                    <el-slider
+                        v-model="alpha"
+                        range
+                        show-tooltip
+                        :max="1"
+                        :step="0.05"
+                        input-size="medium"
+                    >
+                    </el-slider>
+                </el-col>
+            </el-row>
+        </el-collapse-item>
+    </el-collapse>
 </template>
 
 
 <script setup lang="ts">
 import { ref } from 'vue'
 const themeColors = ref(['#720FEB', '#EB1AA9', '#B6DA02']);
+const hue = ref([0, 255]);
+const saturation = ref([0.5, 0.8]);
+const lightness = ref([0.5, 0.8]);
+const alpha = ref([0.5, 0.8]);
 </script>
 
 <style lang="scss">
