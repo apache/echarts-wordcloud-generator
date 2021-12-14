@@ -9,7 +9,7 @@
                 <WConfig></WConfig>
             </el-tab-pane>
             <el-tab-pane label="数据" name="data">
-                <WData :data="config.data"></WData>
+                <WData></WData>
             </el-tab-pane>
             <el-tab-pane label="导出" name="export">导出</el-tab-pane>
         </el-tabs>
@@ -26,14 +26,7 @@ import WChart from './components/WChart.vue';
 import WConfig from './components/WConfig.vue';
 import WData from './components/WData.vue';
 
-type Config = {
-    data: {name: string, value: number}[]
-};
-
 const activeName = 'config';
-const config: Config = {
-    data: [] as {name: string, value: number}[]
-};
 </script>
 
 <style>
