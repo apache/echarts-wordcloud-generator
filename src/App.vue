@@ -6,7 +6,7 @@
         </h3>
         <el-tabs type="card" v-model="activeName">
             <el-tab-pane label="样式" name="config">
-                <WConfig ref="wconfig"></WConfig>
+                <WConfig ref="wconfig" @change="onChange"></WConfig>
             </el-tab-pane>
             <el-tab-pane label="数据" name="data">
                 <WData ref="wdata" @change="onChange"></WData>
@@ -36,7 +36,7 @@ const {t} = useI18n({ useScope: 'global' });
 const activeName = 'config';
 
 function onChange() {
-    wchart.value?.run(wdata.value?.data);
+    wchart.value?.run(wdata.value?.data, wconfig.value?.getConfig());
 }
 
 setTimeout(() => {

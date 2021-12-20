@@ -24,7 +24,7 @@
     },
     "dependencies": {
         "echarts": "^5.2.2",
-        "echarts-wordcloud": "^2.0.0",
+        "echarts-wordcloud": "file:../echarts-wordcloud",
         "element-plus": "^1.0.2-beta.44",
         "lodash": "^4.17.19",
         "vue": "^3.0.11",
