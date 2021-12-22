@@ -109,13 +109,19 @@
             placeholder="请选择字体"
             @change="changeFontFamily"
           >
-            <el-option
-              v-for="item in fontFamilies"
-              :key="item"
-              :label="item"
-              :value="item"
+            <el-option-group
+              v-for="group in fontFamilies"
+              :key="group.name"
+              :label="group.name"
             >
-            </el-option>
+              <el-option
+                v-for="item in group.children"
+                :key="item"
+                :label="item.name"
+                :value="item.value"
+              >
+              </el-option>
+            </el-option-group>
           </el-select>
         </el-col>
       </el-row>
@@ -212,6 +218,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import Color from 'color';
+import WebFont from 'webfontloader';
 
 const colorPalettes = [
   {
@@ -226,10 +233,6 @@ const colorPalettes = [
     bgColor: '#dbf3ff',
     themeColors: ['#4aa6d5', '#d3b16a', '#fb8500']
   },
-  // {
-  //   bgColor: '#eae2b7',
-  //   themeColors: ['#003049', '#d62828', '#f77f00', '#fcbf49']
-  // },
   {
     bgColor: '#fbffd1',
     themeColors: ['#132a13', '#90a955', '#ecf39e']
@@ -248,17 +251,65 @@ const width = ref(90);
 const height = ref(90);
 const selectedMask = ref('circle');
 
+const normalizeFont = (font: string | { name: string; value: string }) => {
+  if (typeof font === 'string') {
+    return {
+      name: font,
+      value: font
+    };
+  }
+  return font;
+};
+
+const sortFont = (
+  a: { name: string; value: string },
+  b: { name: string; value: string }
+) => {
+  if (a.name < b.name) {
+    return -1;
+  }
+  if (a.name > b.name) {
+    return 1;
+  }
+  return 0;
+};
+
 const fontFamilies = [
-  'Arial',
-  'Lato',
-  'Times New Roman',
-  'Courier New',
-  'Georgia',
-  'Helvetica',
-  'Lucida Sans',
-  'Tahoma',
-  'Verdana'
+  {
+    name: '系统字体',
+    children: [
+      'Arial',
+      'Times New Roman',
+      'Courier New',
+      'Georgia',
+      { name: '宋体/华文宋体', value: 'SimSun, STSong' },
+      { name: '黑体/华文黑体', value: 'SimHei, STHeiti' },
+      { name: '微软雅黑', value: 'Microsoft YaHei' }
+    ]
+      .map(normalizeFont)
+      .sort(sortFont)
+  },
+  {
+    name: 'Google Fonts',
+    children: [
+      'Pushster',
+      'Lato',
+      'Roboto',
+      'Roboto Slab',
+      'Open Sans',
+      'Oswald',
+      'Ubuntu',
+      'Lobster',
+      { name: '马善政毛笔楷书', value: 'Ma Shan Zheng' },
+      { name: '站酷庆科黄油体', value: 'ZCOOL QingKe HuangYou' },
+      { name: '站酷小薇LOGO体', value: 'ZCOOL XiaoWei' }
+    ]
+      .map(normalizeFont)
+      .sort(sortFont)
+  }
 ];
+const webFontsLoaded: string[] = [];
+
 const masks = [
   {
     name: '椭圆',
@@ -293,7 +344,7 @@ const masks = [
   }
 ];
 
-const emit = defineEmits(['change']);
+const emit = defineEmits(['change', 'fontLoading', 'fontLoaded']);
 
 defineExpose({ getConfig });
 
@@ -302,6 +353,23 @@ setTimeout(() => {
 }, 0);
 
 function changeFontFamily() {
+  let fontFamily = selectedFontFamily.value;
+  const font = fontFamilies[1].children.find(item => item.value === fontFamily);
+  if (font && !webFontsLoaded.includes(font.value)) {
+    emit('fontLoading');
+    WebFont.load({
+      google: {
+        families: [fontFamily]
+      },
+      fontactive: () => {
+        webFontsLoaded.push(font.value);
+        emit('fontLoaded');
+        change();
+      }
+    });
+    return;
+  }
+
   change();
 }
 

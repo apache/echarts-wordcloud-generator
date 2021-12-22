@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-loading="isWebFontLoading" element-loading-text="字体加载中">
     <div class="chart" ref="chartRef">aaa</div>
   </div>
 </template>
@@ -15,9 +15,11 @@ import Color from 'color';
 // });
 const chart = shallowRef<echarts.ECharts | null>(null);
 const chartRef = ref<HTMLElement | null>(null);
+const isWebFontLoading = ref(false);
 
 defineExpose({
-  run
+  run,
+  setLoading
 });
 
 type Config = {
@@ -33,6 +35,10 @@ type Config = {
   height: number;
   shape: string;
 };
+
+function setLoading(isLoading: boolean) {
+  isWebFontLoading.value = isLoading;
+}
 
 function run(data?: [], config?: Config) {
   const hues = config

@@ -6,7 +6,13 @@
       </h3>
       <el-tabs type="card" v-model="activeName">
         <el-tab-pane label="样式" name="config">
-          <WConfig ref="wconfig" @change="onChange"></WConfig>
+          <WConfig
+            ref="wconfig"
+            @change="onChange"
+            @fontLoading="onFontLoading"
+            @fontLoaded="onFontLoaded"
+          >
+          </WConfig>
         </el-tab-pane>
         <el-tab-pane label="数据" name="data">
           <WData ref="wdata" @change="onChange"></WData>
@@ -37,6 +43,14 @@ const activeName = 'config';
 
 function onChange() {
   wchart.value?.run(wdata.value?.data, wconfig.value?.getConfig());
+}
+
+function onFontLoading() {
+  wchart.value?.setLoading(true);
+}
+
+function onFontLoaded() {
+  wchart.value?.setLoading(false);
 }
 
 setTimeout(() => {
