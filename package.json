@@ -9,6 +9,7 @@
     },
     "devDependencies": {
         "@babel/polyfill": "^7.12.1",
+        "@types/color": "^3.0.2",
         "@vitejs/plugin-vue": "^1.2.2",
         "@vue/compiler-sfc": "^3.0.11",
         "chalk": "^3.0.0",
@@ -23,6 +24,7 @@
         "yargs": "^6.6.0"
     },
     "dependencies": {
+        "color": "^4.1.0",
         "echarts": "^5.2.2",
         "echarts-wordcloud": "file:../echarts-wordcloud",
         "element-plus": "^1.0.2-beta.44",

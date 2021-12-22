@@ -8,6 +8,7 @@
 import { onMounted, shallowRef, ref } from 'vue';
 import * as echarts from 'echarts';
 import 'echarts-wordcloud';
+import Color from 'color';
 
 // const props = defineProps({
 //   foo: String
@@ -20,7 +21,8 @@ defineExpose({
 });
 
 type Config = {
-  hue: number[];
+  bgColor: string;
+  themeColors: string[];
   saturation: number[];
   lightness: number[];
   alpha: number[];
@@ -33,8 +35,32 @@ type Config = {
 };
 
 function run(data?: [], config?: Config) {
-  config && console.log(config.width, config.height);
+  const hues = config
+    ? config.themeColors.map(
+        color =>
+          Color(color)
+            .hsl()
+            .object().h
+      )
+    : [];
+
+  function getHue() {
+    const index = Math.floor(Math.random() * hues.length);
+    return hues[index];
+  }
+
+  function getRandom(minMax: number[] | undefined) {
+    if (!minMax) {
+      return 0;
+    }
+    const max = minMax[1] == null ? 1 : minMax[1];
+    const min = minMax[0] == null ? 0 : minMax[0];
+    const range = max - min || 1;
+    return Math.random() * range + min;
+  }
+
   chart.value!.setOption({
+    backgroundColor: config!.bgColor,
     series: [
       {
         type: 'wordCloud',
@@ -46,7 +72,17 @@ function run(data?: [], config?: Config) {
         width: config?.width + '%',
         height: config?.height + '%',
         layoutAnimation: true,
-        keepAspect: true
+        keepAspect: true,
+        textStyle: {
+          color: (param: any) => {
+            const value = param.value;
+            const h = getHue();
+            const s = getRandom(config?.saturation);
+            const l = getRandom(config?.lightness);
+            const color = Color(`hsl(${h}, ${s}%, ${l}%)`);
+            return color.toString();
+          }
+        }
       }
     ],
     textStyle: {
