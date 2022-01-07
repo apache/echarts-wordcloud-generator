@@ -65,7 +65,6 @@ function run(data?: [], config?: Config) {
     const range = max - min || 1;
     return Math.random() * range + min;
   }
-  console.log(config?.shapeRatio)
 
   function render(maskImage?: HTMLImageElement) {
     chart.value!.setOption({
@@ -103,7 +102,9 @@ function run(data?: [], config?: Config) {
   let maskImage: HTMLImageElement;
   if (config) {
     maskImage = new Image();
-    maskImage.src = config.shape + '.png';
+    maskImage.src = config.shape.startsWith('blob:')
+      ? config.shape
+      : config.shape + '.png';
     maskImage.onload = () => {
       render(maskImage);
     };

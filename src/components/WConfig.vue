@@ -217,6 +217,17 @@
         <img v-bind:src="item.value + '.png'" />
         <div class="mark" v-if="item.isFromFreepik">*</div>
       </div>
+      <el-upload
+        class="img-select img-uploader"
+        v-bind:class="{ selected: imageUrl === selectedMask }"
+        action="https://jsonplaceholder.typicode.com/posts/"
+        :show-file-list="false"
+        list-type="picture"
+        :on-success="handleImageSuccess"
+        :before-upload="beforeImageUpload">
+        <img v-if="imageUrl" :src="imageUrl">
+        <i v-else class="el-icon-plus img-uploader-icon"></i>
+      </el-upload>
       <div class="hint">
         带 * 的形状来自 <a href="https://www.freepik.com" title="Freepik" _target="_blank">Freepik</a>，查看<a href="https://media.flaticon.com/license/license.pdf" _target="_blank">版权</a>
       </div>
@@ -260,6 +271,7 @@ const width = ref(90);
 const height = ref(90);
 const selectedMask = ref('heart');
 const shapeRatio = ref(true);
+const imageUrl = ref('');
 
 const normalizeFont = (font: string | { name: string; value: string }) => {
   if (typeof font === 'string') {
@@ -501,6 +513,18 @@ function addThemeColor() {
   emit('change');
 }
 
+function handleImageSuccess(res: any, file: any) {
+  // console.log(res, file);
+  imageUrl.value = URL.createObjectURL(file.raw);
+  selectedMask.value = imageUrl.value;
+  change();
+}
+
+function beforeImageUpload(file: any) {
+  // TODO: loading
+  return true;
+}
+
 function getConfig() {
   return {
     bgColor: bgColor.value,
@@ -613,6 +637,22 @@ $border-color: #e6e6e6;
     right: 4px;
     color: #000;
   }
+}
+
+.img-uploader {
+  position: relative;
+  overflow: hidden;
+  top: 6px;
+}
+
+.img-uploader-icon {
+  font-size: 28px;
+  line-height: 55px;
+  text-align: center;
+}
+
+.el-upload {
+  display: block;
 }
 
 .el-checkbox {
