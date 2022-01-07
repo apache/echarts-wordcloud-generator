@@ -34,6 +34,7 @@ type Config = {
   width: number;
   height: number;
   shape: string;
+  shapeRatio: boolean;
 };
 
 function setLoading(isLoading: boolean) {
@@ -64,37 +65,55 @@ function run(data?: [], config?: Config) {
     const range = max - min || 1;
     return Math.random() * range + min;
   }
+  console.log(config?.shapeRatio)
 
-  chart.value!.setOption({
-    backgroundColor: config!.bgColor,
-    series: [
-      {
-        type: 'wordCloud',
-        data: data || [],
-        // gridSize: 0,
-        sizeRange: config?.fontSize,
-        rotationRange: config?.rotate,
-        shape: config?.shape,
-        width: config?.width + '%',
-        height: config?.height + '%',
-        layoutAnimation: true,
-        keepAspect: true,
-        textStyle: {
-          color: (param: any) => {
-            const value = param.value;
-            const h = getHue();
-            const s = getRandom(config?.saturation);
-            const l = getRandom(config?.lightness);
-            const color = Color(`hsl(${h}, ${s}%, ${l}%)`);
-            return color.toString();
+  function render(maskImage?: HTMLImageElement) {
+    chart.value!.setOption({
+      backgroundColor: config!.bgColor,
+      series: [
+        {
+          type: 'wordCloud',
+          data: data || [],
+          gridSize: 4,
+          sizeRange: config?.fontSize,
+          rotationRange: config?.rotate,
+          maskImage,
+          width: config?.width + '%',
+          height: config?.height + '%',
+          layoutAnimation: true,
+          keepAspect: config?.shapeRatio,
+          textStyle: {
+            color: (param: any) => {
+              const value = param.value;
+              const h = getHue();
+              const s = getRandom(config?.saturation);
+              const l = getRandom(config?.lightness);
+              const color = Color(`hsl(${h}, ${s}%, ${l}%)`);
+              return color.toString();
+            }
           }
         }
+      ],
+      textStyle: {
+        fontFamily: config?.fontFamily
       }
-    ],
-    textStyle: {
-      fontFamily: config?.fontFamily
-    }
-  });
+    });
+  }
+
+  let maskImage: HTMLImageElement;
+  if (config) {
+    maskImage = new Image();
+    maskImage.src = config.shape + '.png';
+    maskImage.onload = () => {
+      render(maskImage);
+    };
+    maskImage.onerror = () => {
+      render();
+    };
+  }
+  else {
+    render();
+  }
 }
 
 onMounted(() => {

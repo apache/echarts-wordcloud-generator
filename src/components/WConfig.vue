@@ -6,12 +6,14 @@
         <div
           class="color-palette"
           v-for="palette in colorPalettes"
+          v-bind:key="palette.bgColor"
           :style="{ background: palette.bgColor }"
           @click="useColorPalette(palette)"
         >
           <div
             class="color"
             v-for="color in palette.themeColors"
+            v-bind:key="color"
             :style="{ background: color }"
           ></div>
         </div>
@@ -195,22 +197,29 @@
         <el-col :span="12">
           <h5>遮罩形状</h5>
         </el-col>
-        <el-col :span="12">
-          <el-select
-            v-model="selectedMask"
-            placeholder="请选择遮罩图形"
-            @change="changeMask"
+        <el-col :span="12" class="header-right">
+          <el-checkbox
+            v-model="shapeRatio"
+            @change="change"
           >
-            <el-option
-              v-for="item in masks"
-              :key="item.value"
-              :label="item.name"
-              :value="item.value"
-            >
-            </el-option>
-          </el-select>
+            保持长宽比
+          </el-checkbox>
         </el-col>
       </el-row>
+      <div class="img-select"
+        v-for="item in masks"
+        :key="item.value"
+        :value="item.value"
+        v-bind:class="{ selected: item.value === selectedMask }"
+        v-bind:title="item.name"
+        @click="changeMask(item.value)"
+      >
+        <img v-bind:src="item.value + '.png'" />
+        <div class="mark" v-if="item.isFromFreepik">*</div>
+      </div>
+      <div class="hint">
+        带 * 的形状来自 <a href="https://www.freepik.com" title="Freepik" _target="_blank">Freepik</a>，查看<a href="https://media.flaticon.com/license/license.pdf" _target="_blank">版权</a>
+      </div>
     </el-collapse-item>
   </el-collapse>
 </template>
@@ -249,7 +258,8 @@ const fontSize = ref([4, 100]);
 const rotate = ref([-90, 90]);
 const width = ref(90);
 const height = ref(90);
-const selectedMask = ref('circle');
+const selectedMask = ref('heart');
+const shapeRatio = ref(true);
 
 const normalizeFont = (font: string | { name: string; value: string }) => {
   if (typeof font === 'string') {
@@ -312,35 +322,94 @@ const webFontsLoaded: string[] = [];
 
 const masks = [
   {
-    name: '椭圆',
+    name: 'ECharts 0',
+    value: 'echarts-0'
+  },
+  {
+    name: 'ECharts 1',
+    value: 'echarts-1'
+  },
+  {
+    name: '圆形',
     value: 'circle'
   },
   {
     name: '方形',
-    value: 'square'
+    value: 'rect'
+  },
+  {
+    name: '云',
+    value: 'cloud',
+    isFromFreepik: true
   },
   {
     name: '菱形',
-    value: 'diamond'
+    value: 'rhombus',
+    isFromFreepik: true
   },
   {
     name: '三角形',
-    value: 'triangle'
+    value: 'triangle',
+    isFromFreepik: true
   },
   {
     name: '五边形',
-    value: 'pentagon'
+    value: 'pentagon',
+    isFromFreepik: true
   },
   {
     name: '五角星',
-    value: 'star'
+    value: 'star',
+    isFromFreepik: true
+  },
+  {
+    name: '圆角矩形',
+    value: 'rounded-rectangle',
+    isFromFreepik: true
   },
   {
     name: '爱心',
-    value: 'cardioid'
-    // }, {
-    //     name: '自定义图片',
-    //     value: 'image'
+    value: 'heart',
+    isFromFreepik: true
+  },
+  {
+    name: '六边形',
+    value: 'hexagonal',
+    isFromFreepik: true
+  },
+  {
+    name: '闪电',
+    value: 'flash',
+    isFromFreepik: true
+  },
+  {
+    name: '水滴',
+    value: 'drop',
+    isFromFreepik: true
+  },
+  {
+    name: '六瓣花',
+    value: 'flower',
+    isFromFreepik: true
+  },
+  {
+    name: '喷溅',
+    value: 'splash',
+    isFromFreepik: true
+  },
+  {
+    name: '地标',
+    value: 'maps-and-flags',
+    isFromFreepik: true
+  },
+  {
+    name: '问号',
+    value: 'question-mark',
+    isFromFreepik: true
+  },
+  {
+    name: 'WOW',
+    value: 'wow'
   }
 ];
 
@@ -373,7 +442,8 @@ function changeFontFamily() {
   change();
 }
 
-function changeMask() {
+function changeMask(value: string) {
+  selectedMask.value = value;
   change();
 }
 
@@ -443,12 +513,16 @@ function getConfig() {
     rotate: rotate.value,
     width: width.value,
     height: height.value,
-    shape: selectedMask.value === 'image' ? null : selectedMask.value
+    shape: selectedMask.value,
+    shapeRatio: shapeRatio.value,
   };
 }
 </script>
 
 <style lang="scss">
+$brand-color: #409eff;
+$border-color: #e6e6e6;
+
 .title-right {
   position: absolute;
   top: 10px;
@@ -457,6 +531,10 @@ function getConfig() {
   a {
     display: inline-block;
   }
+}
+
+.header-right {
+  text-align: right;
 }
 
 .el-color-picker {
@@ -472,9 +550,9 @@ function getConfig() {
   padding: 3px 6px;
   box-sizing: border-box;
   vertical-align: top;
-  border: 1px solid #e6e6e6;
+  border: 1px solid $border-color;
   border-radius: 4px;
-  color: #409eff;
+  color: $brand-color;
 }
 
 .color-palette {
@@ -498,6 +576,45 @@ function getConfig() {
   }
 }
 
+.hint {
+  margin: 5px 0;
+  color: #888;
+
+  a {
+    color: $brand-color;
+  }
+}
+
+.img-select {
+  position: relative;
+  display: inline-block;
+  width: 57px;
+  height: 57px;
+  margin-right: 5px;
+  border: 1px solid $border-color;
+  padding: 5px;
+  border-radius: 4px;
+  opacity: 0.5;
+  cursor: pointer;
+
+  &.selected {
+    border-color: $brand-color;
+    opacity: 1;
+  }
+
+  img {
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  .mark {
+    position: absolute;
+    top: -2px;
+    right: 4px;
+    color: #000;
+  }
+}
+
 .el-checkbox {
   --el-checkbox-font-color: #888;
   margin-top: 7px;
@@ -509,7 +626,7 @@ function getConfig() {
 
 .el-dropdown-link {
   cursor: pointer;
-  color: #409eff;
+  color: $brand-color;
 }
 
 .el-icon-arrow-down {
