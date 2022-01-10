@@ -1,6 +1,13 @@
 <template>
   <div v-loading="isWebFontLoading" element-loading-text="字体加载中">
-    <div class="chart" ref="chartRef">aaa</div>
+    <div
+      class="chart"
+      ref="chartRef"
+      v-bind:style="{
+        width: width + 'px',
+        height: height + 'px'
+      }"
+    ></div>
   </div>
 </template>
 
@@ -10,16 +17,17 @@ import * as echarts from 'echarts';
 import 'echarts-wordcloud';
 import Color from 'color';
 
-// const props = defineProps({
-//   foo: String
-// });
 const chart = shallowRef<echarts.ECharts | null>(null);
 const chartRef = ref<HTMLElement | null>(null);
 const isWebFontLoading = ref(false);
+const width = ref(800);
+const height = ref(600);
 
 defineExpose({
   run,
-  setLoading
+  setLoading,
+  resize,
+  download
 });
 
 type Config = {
@@ -41,14 +49,53 @@ function setLoading(isLoading: boolean) {
   isWebFontLoading.value = isLoading;
 }
 
-function run(data?: [], config?: Config) {
+function resize(w: number, h: number) {
+  w = Math.max(100, w);
+  h = Math.max(100, h);
+  if (width.value !== w || height.value !== h) {
+    width.value = w;
+    height.value = h;
+  }
+  setTimeout(() => {
+    chart.value!.resize();
+  });
+}
+
+function download() {
+  if (chart.value) {
+    try {
+      const url = chart.value.getDataURL();
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'wordcloud.png';
+      a.click();
+    } catch (e) {
+      console.error(e);
+      alert('保存出错了，可以尝试在右图中点击鼠标右键，并选择“图片储存为”');
+    }
+  }
+}
+
+function run(data?: [], fillSmall?: boolean, config?: Config) {
+  const chartData = (data ? data.slice() : []) as {
+    name: string;
+    value: number;
+  }[];
+  // if (fillSmall) {
+  //   const smallData = chartData.filter((d) => d.value < 10);
+  //   const maxData = 400;
+  //   for (let i = chartData.length; i < maxData; ++i) {
+  //     for (let j = 0; j < smallData.length && i < maxData; ++j) {
+  //       chartData.push({
+  //         name: smallData[j].name,
+  //         value: smallData[j].value
+  //       });
+  //     }
+  //   }
+  // }
+
   const hues = config
-    ? config.themeColors.map(
-        color =>
-          Color(color)
-            .hsl()
-            .object().h
-      )
+    ? config.themeColors.map((color) => Color(color).hsl().object().h)
     : [];
 
   function getHue() {
@@ -72,7 +119,7 @@ function run(data?: [], config?: Config) {
       series: [
         {
           type: 'wordCloud',
-          data: data || [],
+          data: chartData,
           gridSize: 4,
           sizeRange: config?.fontSize,
           rotationRange: config?.rotate,
@@ -111,8 +158,7 @@ function run(data?: [], config?: Config) {
     maskImage.onerror = () => {
       render();
     };
-  }
-  else {
+  } else {
     render();
   }
 }

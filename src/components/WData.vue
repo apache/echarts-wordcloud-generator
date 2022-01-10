@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- <el-checkbox :v-model="fillSmall">用小于 10 的数据填充剩余空间</el-checkbox> -->
     <el-table class="word-table" :data="tableData" empty-text="无数据">
       <el-table-column prop="name" label="文本">
         <template v-slot="scope">
@@ -47,7 +48,8 @@
     <el-table class="word-table" :show-header="false" :data="pendingData">
       <el-table-column fixed prop="name" label="文本">
         <template v-slot="scope">
-          <el-input size="small" v-model="scope.row.name"> </el-input>
+          <el-input size="small" v-model="scope.row.name" placeholder="文本">
+          </el-input>
         </template>
       </el-table-column>
       <el-table-column prop="value" label="大小">
@@ -55,7 +57,7 @@
           <el-input
             size="small"
             v-model="scope.row.value"
-            placeholder="留空则随机大小"
+            placeholder="相对大小"
           >
           </el-input>
         </template>
@@ -69,9 +71,9 @@
       </el-table-column>
     </el-table>
     <div class="padding">
-      <el-button type="primary" size="medium" @click="removeAll()">
+      <!-- <el-button type="primary" size="medium" @click="removeAll()">
         导入 .cvs
-      </el-button>
+      </el-button> -->
       <el-button type="danger" size="medium" @click="removeAll()">
         清空
       </el-button>
@@ -80,7 +82,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineEmits } from "vue";
+import { ref, defineEmits } from 'vue';
 
 type WordData = {
   name?: string;
@@ -90,36 +92,37 @@ type WordData = {
 
 const tableData = ref([] as WordData[]);
 const pendingData = ref([{}] as WordData[]);
+const fillSmall = ref(true);
 
-const emit = defineEmits(["change"]);
+const emit = defineEmits(['change']);
 
-defineExpose({ data: tableData, setData });
+defineExpose({ data: tableData, setData, fillSmall });
 
 function setData(data: WordData[]) {
   tableData.value = data;
-  emit("change");
+  emit('change');
 }
 
 function removeData(row: WordData) {
-  tableData.value = tableData.value.filter(item => item !== row);
-  emit("change");
+  tableData.value = tableData.value.filter((item) => item !== row);
+  emit('change');
 }
 
-function edit(row: WordData, attr: "name" | "value") {
+function edit(row: WordData, attr: 'name' | 'value') {
   row.editAttr = attr;
 }
 
 function doneEditing(row: WordData) {
   row.editAttr = undefined;
-  emit("change");
+  emit('change');
 }
 
 function addRow() {
   if (pendingData.value[0].name) {
-    const rawValue = (pendingData.value[0].value as unknown) as string;
+    const rawValue = pendingData.value[0].value as unknown as string;
     const value = parseFloat(rawValue);
-    if (rawValue != null && rawValue !== "" && isNaN(value)) {
-      alert("请输入数字");
+    if (rawValue != null && rawValue !== '' && isNaN(value)) {
+      alert('请输入数字');
       return;
     } else {
       tableData.value.push({
@@ -127,14 +130,14 @@ function addRow() {
         value
       });
       pendingData.value = [{}];
-      emit("change");
+      emit('change');
     }
   }
 }
 
 function removeAll() {
   tableData.value = [];
-  emit("change");
+  emit('change');
 }
 </script>
 

@@ -25,7 +25,7 @@
 
       <h5>色相范围</h5>
       <el-row>
-        <el-col :span="14">
+        <el-col :span="22">
           <el-color-picker
             v-for="(color, index) in themeColors"
             v-bind:key="index"
@@ -41,14 +41,14 @@
             <i class="el-icon-plus"></i>
           </div>
         </el-col>
-        <el-col :span="8" :offset="2">
+        <!-- <el-col :span="8" :offset="2">
           <el-checkbox>关联数据大小</el-checkbox>
-        </el-col>
+        </el-col> -->
       </el-row>
 
       <h5>饱和度范围</h5>
       <el-row>
-        <el-col :span="13" :offset="1">
+        <el-col :span="22" :offset="1">
           <el-slider
             v-model="saturation"
             range
@@ -60,14 +60,14 @@
           >
           </el-slider>
         </el-col>
-        <el-col :span="8" :offset="2">
+        <!-- <el-col :span="8" :offset="2">
           <el-checkbox>关联数据大小</el-checkbox>
-        </el-col>
+        </el-col> -->
       </el-row>
 
       <h5>亮度范围</h5>
       <el-row>
-        <el-col :span="13" :offset="1">
+        <el-col :span="22" :offset="1">
           <el-slider
             v-model="lightness"
             range
@@ -79,9 +79,9 @@
           >
           </el-slider>
         </el-col>
-        <el-col :span="8" :offset="2">
+        <!-- <el-col :span="8" :offset="2">
           <el-checkbox>关联数据大小</el-checkbox>
-        </el-col>
+        </el-col> -->
       </el-row>
 
       <!-- <h5>透明度范围</h5>
@@ -198,15 +198,13 @@
           <h5>遮罩形状</h5>
         </el-col>
         <el-col :span="12" class="header-right">
-          <el-checkbox
-            v-model="shapeRatio"
-            @change="change"
-          >
+          <el-checkbox v-model="shapeRatio" @change="change">
             保持长宽比
           </el-checkbox>
         </el-col>
       </el-row>
-      <div class="img-select"
+      <div
+        class="img-select"
         v-for="item in masks"
         :key="item.value"
         :value="item.value"
@@ -224,12 +222,20 @@
         :show-file-list="false"
         list-type="picture"
         :on-success="handleImageSuccess"
-        :before-upload="beforeImageUpload">
-        <img v-if="imageUrl" :src="imageUrl">
+        :before-upload="beforeImageUpload"
+      >
+        <img v-if="imageUrl" :src="imageUrl" />
         <i v-else class="el-icon-plus img-uploader-icon"></i>
       </el-upload>
       <div class="hint">
-        带 * 的形状来自 <a href="https://www.freepik.com" title="Freepik" _target="_blank">Freepik</a>，查看<a href="https://media.flaticon.com/license/license.pdf" _target="_blank">版权</a>
+        带 * 的形状来自
+        <a href="https://www.freepik.com" title="Freepik" _target="_blank"
+          >Freepik</a
+        >，查看<a
+          href="https://media.flaticon.com/license/license.pdf"
+          _target="_blank"
+          >版权</a
+        >
       </div>
     </el-collapse-item>
   </el-collapse>
@@ -237,7 +243,6 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import Color from 'color';
 import WebFont from 'webfontloader';
 
 const colorPalettes = [
@@ -261,8 +266,8 @@ const colorPalettes = [
 
 const bgColor = ref(colorPalettes[0].bgColor);
 const themeColors = ref(colorPalettes[0].themeColors);
-const saturation = ref([50, 80]);
-const lightness = ref([50, 80]);
+const saturation = ref([20, 40]);
+const lightness = ref([50, 75]);
 const alpha = ref([0.5, 0.8]);
 const selectedFontFamily = ref('Arial');
 const fontSize = ref([4, 100]);
@@ -435,7 +440,9 @@ setTimeout(() => {
 
 function changeFontFamily() {
   let fontFamily = selectedFontFamily.value;
-  const font = fontFamilies[1].children.find(item => item.value === fontFamily);
+  const font = fontFamilies[1].children.find(
+    (item) => item.value === fontFamily
+  );
   if (font && !webFontsLoaded.includes(font.value)) {
     emit('fontLoading');
     WebFont.load({
@@ -460,29 +467,29 @@ function changeMask(value: string) {
 }
 
 function changeColor() {
-  let minS = 100;
-  let maxS = 0;
-  let minL = 100;
-  let maxL = 0;
-  themeColors.value.forEach(color => {
-    const c = Color(color);
-    const s = Math.round(c.saturationv());
-    const l = Math.round(c.lightness());
-    if (s < minS) {
-      minS = s;
-    }
-    if (s > maxS) {
-      maxS = s;
-    }
-    if (l < minL) {
-      minL = l;
-    }
-    if (l > maxL) {
-      maxL = l;
-    }
-  });
-  saturation.value = [minS, maxS];
-  lightness.value = [minL, maxL];
+  // let minS = 100;
+  // let maxS = 0;
+  // let minL = 100;
+  // let maxL = 0;
+  // themeColors.value.forEach((color) => {
+  //   const c = Color(color);
+  //   const s = Math.round(c.saturationv());
+  //   const l = Math.round(c.lightness());
+  //   if (s < minS) {
+  //     minS = s;
+  //   }
+  //   if (s > maxS) {
+  //     maxS = s;
+  //   }
+  //   if (l < minL) {
+  //     minL = l;
+  //   }
+  //   if (l > maxL) {
+  //     maxL = l;
+  //   }
+  // });
+  // saturation.value = [minS, maxS];
+  // lightness.value = [minL, maxL];
   change();
 }
 
@@ -538,7 +545,7 @@ function getConfig() {
     width: width.value,
     height: height.value,
     shape: selectedMask.value,
-    shapeRatio: shapeRatio.value,
+    shapeRatio: shapeRatio.value
   };
 }
 </script>
