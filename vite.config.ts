@@ -15,9 +15,6 @@ export default defineConfig({
   },
   plugins: [vue()],
   resolve: {
-    alias: {
-      'echarts-wordcloud': '/Library/WebServer/Documents/echarts-wordcloud',
-      echarts: '/Library/WebServer/Documents/echarts'
-    }
+    alias: {}
   }
 });

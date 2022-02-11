@@ -251,22 +251,30 @@ const colorPalettes = [
     themeColors: ['#f19d70', '#b7b7a4', '#6b705c']
   },
   {
+    bgColor: '#ffeff1',
+    themeColors: ['#4C3F91', '#9145B6', '#B958A5', '#FF5677']
+  },
+  {
     bgColor: '#eef6fa',
     themeColors: ['#5470c6', '#91cc75', '#fac858', '#ee6666']
   },
   {
-    bgColor: '#dbf3ff',
-    themeColors: ['#4aa6d5', '#d3b16a', '#fb8500']
+    bgColor: '#FFE6E2',
+    themeColors: ['#23425F', '#A64942', '#FF7844']
   },
   {
-    bgColor: '#fbffd1',
-    themeColors: ['#132a13', '#90a955', '#ecf39e']
+    bgColor: '#FFF8E5',
+    themeColors: ['#EA5C2B', '#FF7F3F', '#F6D860', '#95CD41']
+  },
+  {
+    bgColor: '#F0F0F0',
+    themeColors: ['#504D4D', '#FF5677', '#F5B316']
   }
 ];
 
 const bgColor = ref(colorPalettes[0].bgColor);
 const themeColors = ref(colorPalettes[0].themeColors);
-const saturation = ref([20, 40]);
+const saturation = ref([20, 60]);
 const lightness = ref([50, 75]);
 const alpha = ref([0.5, 0.8]);
 const selectedFontFamily = ref('Arial');

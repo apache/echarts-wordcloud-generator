@@ -120,7 +120,7 @@ function run(data?: [], fillSmall?: boolean, config?: Config) {
         {
           type: 'wordCloud',
           data: chartData,
-          gridSize: 4,
+          gridSize: 6,
           sizeRange: config?.fontSize,
           rotationRange: config?.rotate,
           maskImage,
